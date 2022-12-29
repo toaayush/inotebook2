@@ -12,14 +12,16 @@ function App() {
         <Router>
           {/* <h1>This is iNotebook</h1> */}
           <Navbar />
-          <Switch>
-            <Route exact path="/">
-              <Home key="home" />
-            </Route>
-            <Route exact path="/about">
-              <About key="about" />
-            </Route>
-          </Switch>
+          <div className="container">
+            <Switch>
+              <Route exact path="/">
+                <Home key="home" />
+              </Route>
+              <Route exact path="/about">
+                <About key="about" />
+              </Route>
+            </Switch>
+          </div>
         </Router>
       </NoteState>
     </>

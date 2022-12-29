@@ -15,5 +15,5 @@ app.get('/', (req, res) => {
   res.send('Hello Ayush!')
 })
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`iNotebook backend app listening on htttp://localhost:${port}`)
 })
