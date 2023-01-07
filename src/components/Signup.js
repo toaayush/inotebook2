@@ -6,12 +6,13 @@ const Signup = (props) => {
     name: "",
     email: "",
     password: "",
-    cpassword: "",
+    cpassword: ""
   });
   let history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(credentials.password===credentials.cpassword){
     const { name, email, password } = credentials;
     const response = await fetch(`http://localhost:5000/api/auth/createuser`, {
       method: "POST",
@@ -29,6 +30,9 @@ const Signup = (props) => {
       props.showAlert("Account Created Successfully", "success");
     } else {
       props.showAlert("Invalid Credentials", "danger");
+    }}
+    else{
+      props.showAlert("Password does not match", "danger");
     }
   };
   const onChange = (e) => {
