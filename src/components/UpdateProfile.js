@@ -5,7 +5,7 @@ import userContext from "../context/users/userContext";
 function UpdateProfile(props) {
   const context = useContext(userContext);
   let history = useHistory();
-  const { updated, editUser } = context;
+  const { editUser } = context;
   const [user, setUser] = useState({
     id: "",
     ename: "",
@@ -32,12 +32,14 @@ function UpdateProfile(props) {
   }, []);
 
   const handleClick = async (e) => {
+    let updated = false
     if (user.epassword === user.ecpassword) {
       e.preventDefault();
       // console.log("Updating the user...", user);
-      await editUser(user.id, user.ename, user.eemail, user.epassword, user.eage);
-      console.log(updated)
-      if (updated) {
+      // console.log(editUser(user.id, user.ename, user.eemail, user.epassword, user.eage, updated));
+      let updateTrue = await editUser(user.id, user.ename, user.eemail, user.epassword, user.eage, updated);
+      console.log(updateTrue)
+      if (updateTrue) {
         props.showAlert("Updated Successfully", "success");
         history.push("/");
         // console.log(updatedDetail)

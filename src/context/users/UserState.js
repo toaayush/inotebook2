@@ -4,10 +4,9 @@ import UserContext from "./userContext";
 const UserState = (props) => {
   const [updatedDetail, setUpdatedDetail] = useState([])
   // const [updated, setUpdated] = useState(false)
-  let updated = false;
   const host = "http://localhost:5000";
   // Edit a User
-  const editUser = async (id, name, email, password, age) => {
+  const editUser = async (id, name, email, password, age, updated) => {
     // API Call
     const response = await fetch(`${host}/api/auth/updateuser/${id}`, {
       method: "PUT",
@@ -19,16 +18,16 @@ const UserState = (props) => {
     });
     const json = await response.json();
     setUpdatedDetail(json.user);
-    // setUpdated(json.success);
+    // setUpdated(true);
     updated = json.success
     console.log(json.success)
-    console.log(updated)
+    // console.log(updated)
     return updated;
   };
   
 
   return (
-    <UserContext.Provider value={{ updatedDetail, updated, editUser }}>
+    <UserContext.Provider value={{ updatedDetail, editUser }}>
       {props.children}
     </UserContext.Provider>
   );
