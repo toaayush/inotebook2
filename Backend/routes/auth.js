@@ -4,7 +4,7 @@ const User = require("../models/User");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const fetchuser = require("../middleware/fetchuser")
+const fetchuser = require("../middleware/fetchuser");
 
 const JWT_SECRET = "Ayushisabad$boy";
 
@@ -31,7 +31,10 @@ router.post(
       if (user) {
         return res
           .status(400)
-          .json({success, error: "Sorry a user with this email alraedy exists" });
+          .json({
+            success,
+            error: "Sorry a user with this email already exists",
+          });
       }
       const salt = await bcrypt.genSalt(10);
       const secPass = await bcrypt.hash(req.body.password, salt);
@@ -49,7 +52,7 @@ router.post(
       };
       const authtoken = jwt.sign(data, JWT_SECRET);
       success = true;
-      res.json({success, authtoken });
+      res.json({ success, authtoken, user });
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Internal Server Error");
@@ -77,13 +80,19 @@ router.post(
       if (!user) {
         return res
           .status(400)
-          .json({ success, error: "Please try to login with correct credentials" });
+          .json({
+            success,
+            error: "Please try to login with correct credentials",
+          });
       }
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
         return res
           .status(400)
-          .json({ success, error: "Please try to login with correct credentials" });
+          .json({
+            success,
+            error: "Please try to login with correct credentials",
+          });
       }
       const data = {
         user: {
@@ -92,7 +101,7 @@ router.post(
       };
       const authtoken = jwt.sign(data, JWT_SECRET);
       success = true;
-      res.json({ success, authtoken });
+      res.json({ success, authtoken, user });
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Internal Server Error");
@@ -105,7 +114,59 @@ router.post("/getuser", fetchuser, async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await User.findById(userId).select("-password");
-    res.send(user)
+    res.send(user);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+//ROUTE 4: Update loggedin User Details using : POST "/api/auth/updateuser". Login required
+router.put("/updateuser/:id", fetchuser, async (req, res) => {
+  let success = true;
+  const { name, email, password, age } = req.body;
+  try {
+    //Create a newNote object
+    const newUser = {};
+    if (name) {
+      newUser.name = name;
+    }
+    if (email) {
+      let user = await User.findOne({ email: req.body.email });
+      if (user) {
+        success = false;
+        return res
+          .status(400)
+          .json({
+            success,
+            error: "Sorry a user with this email already exists",
+          });
+      }
+      newUser.email = email;
+    }
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const secPass = await bcrypt.hash(password, salt);
+      newUser.password = secPass;
+    }
+    if (age) {
+      newUser.age = age;
+    }
+    //Find the user to be updated and update it
+    let user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).send("Not Found");
+    }
+    if (user.id.toString() !== req.user.id) {
+      console.log(user.id);
+      return res.status(401).send("Not Allowed");
+    }
+    user = await User.findByIdAndUpdate(
+      req.params.id,
+      { $set: newUser },
+      { new: true }
+    );
+    res.json({ success, user });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Internal Server Error");

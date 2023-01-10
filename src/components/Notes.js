@@ -11,6 +11,7 @@ const Notes = (props) => {
   const refClose = useRef(null);
   const { notes, getNotes, editNote } = context;
   const [note, setNote] = useState({
+    id: "",
     etitle: "",
     edescription: "",
     etag: "default",
@@ -18,10 +19,10 @@ const Notes = (props) => {
   useEffect(() => {
     if (localStorage.getItem("token")) {
       getNotes();
-      // eslint-disable-next-line
     } else {
       history.push("/login");
     }
+    // eslint-disable-next-line
   }, []);
   const updateNote = (currentNote) => {
     ref.current.click();

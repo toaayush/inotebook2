@@ -1,20 +1,17 @@
 import React from "react";
-import { Link, useLocation, useHistory } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import Profile from "./Profile";
 
 function Navbar() {
   let location = useLocation();
-  let history = useHistory();
-  const handleLogout = ()=>{
-    localStorage.removeItem('token');
-    history.push("/login");
-  }
+  
 
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
-            Navbar
+            iNotebook
           </Link>
           <button
             className="navbar-toggler"
@@ -69,7 +66,7 @@ function Navbar() {
                 </Link>
               </form>
             ) : (
-              <button onClick={handleLogout} className="btn btn-primary">Logout</button>
+              <Profile/>
             )}
           </div>
         </div>

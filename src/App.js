@@ -8,6 +8,8 @@ import Alert from "./components/Alert";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import { useState } from "react";
+import UpdateProfile from "./components/UpdateProfile";
+import UserState from "./context/users/UserState";
 
 function App() {
   const [alert, setAlert] = useState(null);
@@ -22,28 +24,33 @@ function App() {
   };
   return (
     <>
-      <NoteState>
-        <Router>
-          <Navbar />
-          <Alert alert={alert} />
-          <div className="container">
-            <Switch>
-              <Route exact path="/">
-                <Home key="home" showAlert={showAlert} />
-              </Route>
-              <Route exact path="/about">
-                <About key="about" />
-              </Route>
-              <Route exact path="/login">
-                <Login key="login" showAlert={showAlert} />
-              </Route>
-              <Route exact path="/signup">
-                <Signup key="signup" showAlert={showAlert} />
-              </Route>
-            </Switch>
-          </div>
-        </Router>
-      </NoteState>
+      <UserState showAlert={showAlert}>
+        <NoteState>
+          <Router>
+            <Navbar />
+            <Alert alert={alert} />
+            <div className="container">
+              <Switch>
+                <Route exact path="/">
+                  <Home key="home" showAlert={showAlert} />
+                </Route>
+                <Route exact path="/about">
+                  <About key="about" />
+                </Route>
+                <Route exact path="/login">
+                  <Login key="login" showAlert={showAlert} />
+                </Route>
+                <Route exact path="/signup">
+                  <Signup key="signup" showAlert={showAlert} />
+                </Route>
+                <Route exact path="/updateprofile">
+                  <UpdateProfile key="updateprofile" showAlert={showAlert} />
+                </Route>
+              </Switch>
+            </div>
+          </Router>
+        </NoteState>
+      </UserState>
     </>
   );
 }
