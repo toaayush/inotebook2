@@ -29,12 +29,10 @@ router.post(
     try {
       let user = await User.findOne({ email: req.body.email });
       if (user) {
-        return res
-          .status(400)
-          .json({
-            success,
-            error: "Sorry a user with this email already exists",
-          });
+        return res.status(400).json({
+          success,
+          error: "Sorry a user with this email already exists",
+        });
       }
       const salt = await bcrypt.genSalt(10);
       const secPass = await bcrypt.hash(req.body.password, salt);
@@ -78,21 +76,17 @@ router.post(
     try {
       let user = await User.findOne({ email });
       if (!user) {
-        return res
-          .status(400)
-          .json({
-            success,
-            error: "Please try to login with correct credentials",
-          });
+        return res.status(400).json({
+          success,
+          error: "Please try to login with correct credentials",
+        });
       }
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
-        return res
-          .status(400)
-          .json({
-            success,
-            error: "Please try to login with correct credentials",
-          });
+        return res.status(400).json({
+          success,
+          error: "Please try to login with correct credentials",
+        });
       }
       const data = {
         user: {
@@ -124,7 +118,7 @@ router.post("/getuser", fetchuser, async (req, res) => {
 //ROUTE 4: Update loggedin User Details using : POST "/api/auth/updateuser". Login required
 router.put("/updateuser/:id", fetchuser, async (req, res) => {
   let success = true;
-  const { name, email, password, age } = req.body;
+  const { id, name, email, password, age, gender } = req.body;
   try {
     //Create a newNote object
     const newUser = {};
@@ -133,14 +127,17 @@ router.put("/updateuser/:id", fetchuser, async (req, res) => {
     }
     if (email) {
       let user = await User.findOne({ email: req.body.email });
+      // console.log(userDet._id)
       if (user) {
-        success = false;
-        return res
-          .status(400)
-          .json({
+        let userDet = JSON.parse(JSON.stringify(user))
+        if (userDet._id !== id) {
+          success = false;
+          console.log(id)
+          return res.status(400).json({
             success,
             error: "Sorry a user with this email already exists",
           });
+        }
       }
       newUser.email = email;
     }
@@ -151,6 +148,9 @@ router.put("/updateuser/:id", fetchuser, async (req, res) => {
     }
     if (age) {
       newUser.age = age;
+    }
+    if (gender) {
+      newUser.gender = gender;
     }
     //Find the user to be updated and update it
     let user = await User.findById(req.params.id);

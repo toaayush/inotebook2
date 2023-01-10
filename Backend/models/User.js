@@ -27,6 +27,10 @@ const UserSchema = new Schema({
     type: String,
     default: "Unknown",
   },
+  gender: {
+    type: String,
+    default: "Unknown",
+  }
 });
 
 const User = mongoose.model("user", UserSchema);

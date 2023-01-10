@@ -13,9 +13,9 @@ function UpdateProfile(props) {
     epassword: "",
     ecpassword: "",
     eage: "default",
+    egender: "default",
   });
   const updateUser = (currentUser, pass) => {
-    // console.log(currentUser);
     setUser({
       id: currentUser._id,
       ename: currentUser.name,
@@ -23,6 +23,7 @@ function UpdateProfile(props) {
       eemail: currentUser.email,
       epassword: pass,
       ecpassword: pass,
+      egender: currentUser.gender,
     });
   };
   useEffect(() => {
@@ -32,17 +33,24 @@ function UpdateProfile(props) {
   }, []);
 
   const handleClick = async (e) => {
-    let updated = false
+    let updated = false;
     if (user.epassword === user.ecpassword) {
       e.preventDefault();
-      // console.log("Updating the user...", user);
-      // console.log(editUser(user.id, user.ename, user.eemail, user.epassword, user.eage, updated));
-      let updateTrue = await editUser(user.id, user.ename, user.eemail, user.epassword, user.eage, updated);
-      console.log(updateTrue)
+      let update = await editUser(
+        user.id,
+        user.ename,
+        user.eemail,
+        user.epassword,
+        user.eage,
+        user.egender,
+        updated
+      );
+      let updateTrue = update.updated;
       if (updateTrue) {
         props.showAlert("Updated Successfully", "success");
         history.push("/");
-        // console.log(updatedDetail)
+        localStorage.setItem("user", JSON.stringify(update.updatedUser));
+        localStorage.setItem("pass", user.epassword);
       } else {
         props.showAlert("Cannot Update", "danger");
       }
@@ -53,6 +61,14 @@ function UpdateProfile(props) {
   const onChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
+  const onClick = () => {
+    setUser(
+      (user.egender = document.querySelector(
+        'input[name="gender"]:checked'
+      ).value)
+    );
+  };
+
   return (
     <div className="container my-3">
       <h2 className="my-2">Update your profile details</h2>
@@ -126,6 +142,56 @@ function UpdateProfile(props) {
             value={user.ecpassword}
             minLength={5}
           />
+        </div>
+        <div className="d-flex" id="egender" name="egender" value={user.egender} onChange={onChange}>
+        <label htmlFor="gender" className="form-label mx-3">
+            Gender : 
+          </label>
+          <div className="mx-3 form-check">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="gender"
+              id="Male"
+              value="Male"
+              onChange={onChange}
+              onClick={onClick}
+              checked = {(user.egender==="Male")?"checked":""}
+            />
+            <label className="form-check-label" htmlFor="egender">
+              Male
+            </label>
+          </div>
+          <div className="mx-3 form-check">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="gender"
+              id="Female"
+              value="Female"
+              onChange={onChange}
+              onClick={onClick}
+              checked = {(user.egender==="Female")?"checked":""}
+            />
+            <label className="form-check-label" htmlFor="egender">
+              Female
+            </label>
+          </div>
+          <div className="mx-3 form-check">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="gender"
+              id="Prefer not to say"
+              value="Prefer not to say"
+              onChange={onChange}
+              onClick={onClick}
+              checked = {(user.egender==="Prefer not to say")?"checked":""}
+            />
+            <label className="form-check-label" htmlFor="egender">
+              Prefer not to say
+            </label>
+          </div>
         </div>
 
         <button type="submit" className="btn btn-primary" onClick={handleClick}>

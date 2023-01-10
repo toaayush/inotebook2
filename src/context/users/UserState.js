@@ -1,12 +1,10 @@
-import { useState } from "react";
+
 import UserContext from "./userContext";
 
 const UserState = (props) => {
-  const [updatedDetail, setUpdatedDetail] = useState([])
-  // const [updated, setUpdated] = useState(false)
   const host = "http://localhost:5000";
   // Edit a User
-  const editUser = async (id, name, email, password, age, updated) => {
+  const editUser = async (id, name, email, password, age, gender, updated) => {
     // API Call
     const response = await fetch(`${host}/api/auth/updateuser/${id}`, {
       method: "PUT",
@@ -14,20 +12,17 @@ const UserState = (props) => {
         "Content-Type": "application/json",
         "auth-token": localStorage.getItem("token"),
       },
-      body: JSON.stringify({ name, email, password, age }),
+      body: JSON.stringify({ id, name, email, password, age, gender }),
     });
     const json = await response.json();
-    setUpdatedDetail(json.user);
-    // setUpdated(true);
     updated = json.success
-    console.log(json.success)
-    // console.log(updated)
-    return updated;
+    const updatedUser = json.user
+    return {updated: updated, updatedUser: updatedUser};
   };
   
 
   return (
-    <UserContext.Provider value={{ updatedDetail, editUser }}>
+    <UserContext.Provider value={{ editUser }}>
       {props.children}
     </UserContext.Provider>
   );
