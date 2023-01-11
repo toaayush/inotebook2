@@ -9,7 +9,7 @@ const Notes = (props) => {
   let history = useHistory();
   const ref = useRef(null);
   const refClose = useRef(null);
-  const { notes, getNotes, editNote } = context;
+  const { notes, getNotes, deleteNote } = context;
   const [note, setNote] = useState({
     id: "",
     etitle: "",
@@ -24,7 +24,7 @@ const Notes = (props) => {
     }
     // eslint-disable-next-line
   }, []);
-  const updateNote = (currentNote) => {
+  const deletingNote = (currentNote) => {
     ref.current.click();
     setNote({
       id: currentNote._id,
@@ -34,13 +34,10 @@ const Notes = (props) => {
     });
   };
   const handleClick = (e) => {
-    console.log("Updating the note...", note);
-    editNote(note.id, note.etitle, note.edescription, note.etag);
+    console.log("Deleting the note...", note);
+    deleteNote(note.id);
     refClose.current.click();
-    props.showAlert("Updated Successfully", "success");
-  };
-  const onChange = (e) => {
-    setNote({ ...note, [e.target.name]: e.target.value });
+    props.showAlert("Deleted Successfully", "success");
   };
   return (
     <>
@@ -65,7 +62,7 @@ const Notes = (props) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title fs-5" id="exampleModalLabel">
-                Edit Note
+                Are you sure you want to delete?
               </h5>
               <button
                 type="button"
@@ -74,55 +71,8 @@ const Notes = (props) => {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="modal-body">
-              <form className="my-3">
-                <div className="mb-3">
-                  <label htmlFor="title" className="form-label">
-                    Title
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="etitle"
-                    name="etitle"
-                    value={note.etitle}
-                    aria-describedby="emailHelp"
-                    onChange={onChange}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="description" className="form-label">
-                    Description
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="edescription"
-                    name="edescription"
-                    value={note.edescription}
-                    onChange={onChange}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="tag" className="form-label">
-                    Tag
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="etag"
-                    name="etag"
-                    value={note.etag}
-                    onChange={onChange}
-                  />
-                </div>
-              </form>
-            </div>
             <div className="modal-footer">
               <button
-                disabled={
-                  note.edescription.length < 5 || note.etitle.length < 5
-                }
                 ref={refClose}
                 type="button"
                 className="btn btn-secondary"
@@ -135,7 +85,7 @@ const Notes = (props) => {
                 type="button"
                 className="btn btn-primary"
               >
-                Update Note
+                Delete Note
               </button>
             </div>
           </div>
@@ -150,7 +100,7 @@ const Notes = (props) => {
           return (
             <Noteitem
               key={note._id}
-              updateNote={updateNote}
+              deletingNote={deletingNote}
               note={note}
               showAlert={props.showAlert}
             />

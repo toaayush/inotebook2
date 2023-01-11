@@ -22,7 +22,6 @@ const NoteState = (props) => {
 
   // Add a Note
   const addNote = async (title, description, tag) => {
-    console.log("Adding a new note");
     // TODO: API Call
     // API Call
     const response = await fetch(`${host}/api/notes/addnote`, {

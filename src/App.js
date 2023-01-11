@@ -10,6 +10,7 @@ import Signup from "./components/Signup";
 import { useState } from "react";
 import UpdateProfile from "./components/UpdateProfile";
 import UserState from "./context/users/UserState";
+import EditNote from "./components/EditNote";
 
 function App() {
   const [alert, setAlert] = useState(null);
@@ -33,6 +34,9 @@ function App() {
               <Switch>
                 <Route exact path="/">
                   <Home key="home" showAlert={showAlert} />
+                </Route>
+                <Route exact path="/editnote">
+                  <EditNote key="editnote" showAlert={showAlert} />
                 </Route>
                 <Route exact path="/about">
                   <About key="about" />
